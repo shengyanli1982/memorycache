@@ -73,6 +73,20 @@ func TestWithTimeCache(t *testing.T) {
 	}
 }
 
+func TestWithAsyncCallback(t *testing.T) {
+	var as = assert.New(t)
+	{
+		var mc = New[string, any]()
+		as.True(mc.conf.AsyncCallback)
+		as.NotNil(mc.q)
+	}
+	{
+		var mc = New[string, any](WithAsyncCallback(false))
+		as.False(mc.conf.AsyncCallback)
+		as.Nil(mc.q)
+	}
+}
+
 func TestWithSwissTable(t *testing.T) {
 	t.Run("", func(t *testing.T) {
 		var mc = New[string, int](
@@ -85,7 +99,7 @@ func TestWithSwissTable(t *testing.T) {
 
 	t.Run("", func(t *testing.T) {
 		var mc = New[string, int]()
-		_, ok := mc.storage[0].Map.(containers.Map[uint64, pointer])
+		_, ok := mc.storage[0].Map.(containers.HashMap[uint64, pointer])
 		assert.True(t, ok)
 		assert.False(t, mc.conf.SwissTable)
 	})

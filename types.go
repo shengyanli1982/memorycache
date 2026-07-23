@@ -7,9 +7,17 @@ const (
 	ReasonExpired = Reason(0) // 过期
 	ReasonEvicted = Reason(1) // 被驱逐
 	ReasonDeleted = Reason(2) // 被删除
+	ReasonCleared = Reason(3) // 被清空
 )
 
 type CallbackFunc[T any] func(element T, reason Reason)
+
+// callbackPayload 回调快照, 在元素被回收前复制数据并异步派发.
+type callbackPayload[K comparable, V any] struct {
+	ele    Element[K, V]
+	reason Reason
+	cb     CallbackFunc[*Element[K, V]]
+}
 
 type Element[K comparable, V any] struct {
 	// 地址

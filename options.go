@@ -69,6 +69,14 @@ func WithSwissTable(enabled bool) Option {
 	}
 }
 
+// WithAsyncCallback 是否异步执行回调, 默认为true
+// Whether to dispatch callbacks asynchronously, true by default.
+func WithAsyncCallback(enabled bool) Option {
+	return func(c *config) {
+		c.AsyncCallback = enabled
+	}
+}
+
 func withInitialize() Option {
 	return func(c *config) {
 		if c.BucketNum <= 0 {
@@ -94,6 +102,10 @@ func withInitialize() Option {
 
 		if c.BucketCap <= 0 {
 			c.BucketCap = defaultBucketCap
+		}
+
+		if c.MinInterval > c.MaxInterval {
+			c.MinInterval, c.MaxInterval = c.MaxInterval, c.MinInterval
 		}
 	}
 }
@@ -122,4 +134,8 @@ type config struct {
 	// 是否使用swiss table, 默认为false
 	// Whether to use swiss table, false by default.
 	SwissTable bool
+
+	// 是否异步执行回调, 默认为true
+	// Whether to dispatch callbacks asynchronously, true by default.
+	AsyncCallback bool
 }
